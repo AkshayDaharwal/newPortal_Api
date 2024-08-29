@@ -42,10 +42,10 @@ const internData = new Schema(
       type: Number,
     },
     domain: {
-      type: Number,
+      type: String,
     },
     trainername: {
-      type: Number,
+      type: String,
     },
   },
   { collection: "InternData" }
