@@ -59,11 +59,11 @@ const internData = new Schema(
     },
     aadharcard: {
       type: String,
-      require: true,
+     
     },
     imgUrl: {
       type: String,
-      require: true,
+      
     },
   },
   { collection: "InternData" }

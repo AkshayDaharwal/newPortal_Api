@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 const employeeData = new Schema(
   {
     employeId: String,
-    
+
     firstName: {
       type: String,
       require: true,
@@ -19,7 +19,7 @@ const employeeData = new Schema(
       type: String,
       require: true,
     },
-    mobile: {
+    contact: {
       type: Number,
       require: true,
     },

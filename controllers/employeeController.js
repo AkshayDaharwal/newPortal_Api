@@ -41,7 +41,7 @@ exports.employeFetch = async (req, res) => {
 
 exports.employeFetchAll = async (req, res) => {
   try {
-    const employees = await Employee.find(); // Fetch all interns from the database
+    const employees = await Employee.find(); // Fetch all employee from the database
     console.log(employees);
     if (!employees || employees.length === 0) {
       return res.status(404).json({ msg: "No employees details found" });

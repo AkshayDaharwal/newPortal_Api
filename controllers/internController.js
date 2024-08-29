@@ -1,4 +1,4 @@
-const Intern = require('../models/internSchema.js');
+const Intern = require('../models/internSchema');
 // const bcrypt = require('bcrypt');
 // const generator = require('generate-password');
 // const jwt = require('../config/genrateToken');
@@ -7,7 +7,7 @@ const path = require('path');
 
 
 exports.addIntern = async(req, res)=>{
-  const {  firstName, lastName, email, contact,emergencyNo ,correspondingAddress , batch , joiningDate , tolalFees, Installment , dueFees , domain, trainername} = req.body;
+  const {  firstName, lastName, email, contact,emergencyNo ,correspondingAddress , batch , joiningDate , tolalFees, Installment , dueFees , domain, trainername, aadharcard, imgUrl} = req.body;
 
     try {
 
@@ -28,10 +28,7 @@ exports.addIntern = async(req, res)=>{
         }
         const filePath = path.join(uploadDir, Date.now() + "_" + file.name);
 
-        // file.mv(filePath, (error) => {
-        //   if (error) {
-        //       return res.status(500).json({ message: "Error saving file", error });
-        //   }
+        
         file.mv(filePath , (error)=>{
           if (error){
             return res.status(500).json({message : "Error saving file", error})
@@ -58,9 +55,9 @@ exports.addIntern = async(req, res)=>{
           tolalFees,
           Installment , 
           dueFees, 
-          aadharcard : filePath,
-          domain, 
+          domain ,
           trainername,
+          aadharcard : filePath,
           imgUrl: filePath
          });
     
@@ -75,6 +72,76 @@ exports.addIntern = async(req, res)=>{
         res.status(500).send("server error- "  + error);
     }
 }
+
+// exports.addIntern = async(req, res) => {
+//   const { firstName, lastName, email, contact, emergencyNo, correspondingAddress, batch, joiningDate, tolalFees, Installment, dueFees, domain, trainername } = req.body;
+
+//   try {
+//       console.log("Files Received: ", req.files);
+
+//       if (!req.files || !req.files.file) {
+//           return res.status(400).json({ message: "No file uploaded" });
+//       }
+
+//       const file = req.files.file;
+//       const uploadDir = path.join(__dirname, 'files');
+
+//       // Create the directory if it doesn't exist
+//       if (!fs.existsSync(uploadDir)) {
+//           fs.mkdirSync(uploadDir);
+//       }
+
+//       const fileName = Date.now() + "_" + file.name;
+//       const filePath = path.join(uploadDir, fileName);
+
+//       file.mv(filePath, (error) => {
+//         if (error) {
+//             return res.status(500).json({ message: "Error saving file", error });
+//         } else {
+//             console.log("File saved at: ", filePath);
+//         }
+//     });
+
+//       // Check if the intern already exists
+//       const existingIntern = await Intern.findOne({ email: email });
+
+//       if (existingIntern) {
+//           return res.status(400).json({ message: "Intern with this email already exists" });
+//       }
+
+//       // Create a new intern document
+//       const newIntern = new Intern({
+//           firstName,
+//           lastName,
+//           email,
+//           contact,
+//           emergencyNo,
+//           correspondingAddress,
+//           batch,
+//           joiningDate,
+//           tolalFees,
+//           Installment,
+//           dueFees,
+//           domain,
+//           trainername,
+//           aadharcard: `/files/${fileName}`,
+//           imgUrl: `/files/${fileName}`
+//       });
+
+//       // Save the new intern to the database
+//       await newIntern.save();
+
+//       return res.status(200).json({ message: 'Intern added successfully', 
+//         Interndata: {
+//           imgUrl: newIntern.imgUrl,
+//           aadharcard: newIntern.aadharcard,
+//       } });
+
+//   } catch (error) {
+//       console.log(error);
+//       res.status(500).send("server error - " + error);
+//   }
+// };
 
 
 exports.internFetch=async(req,res)=>{
