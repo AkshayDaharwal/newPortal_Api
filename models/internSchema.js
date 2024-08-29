@@ -25,10 +25,6 @@ const internData = new Schema(
       type: Number,
       require: true,
     },
-    position: {
-      type: String,
-      require: true,
-    },
     joiningDate: {
       type: String,
       require: true,

@@ -2,9 +2,8 @@ const Employee = require("../models/employeeModel.js");
 const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const jwt = require("../config/genrateToken");
-const fs = require('fs');
-const path = require('path');
-
+const fs = require("fs");
+const path = require("path");
 
 exports.employeFetch = async (req, res) => {
   try {
@@ -23,7 +22,6 @@ exports.employeFetch = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: error.message });
   }
- 
 };
 
 // exports.employeFetchAll = async (req, res) => {
@@ -55,7 +53,6 @@ exports.employeFetchAll = async (req, res) => {
   }
 };
 
-
 exports.addEmployee = async (req, res) => {
   const {
     employeId,
@@ -70,9 +67,7 @@ exports.addEmployee = async (req, res) => {
     correspondenceAddress,
     currentAddress,
     salary,
-    aadharcard,
-    pancard,
-    imgUrl
+    
   } = req.body;
   try {
     const existingEmployee = await Employee.findOne({ email: email });
@@ -119,14 +114,16 @@ exports.addEmployee = async (req, res) => {
         lastName,
         email,
         mobile,
+        correspondenceAddress,
+        currentAddress,
+        contact,
         emergencyNo,
         position,
         joiningDate,
-        address,
         salary,
-        aadharcard : filePath,
-        pancard : filePath,
-        imgUrl: filePath
+        aadharcard: filePath,
+        pancard: filePath,
+        imgUrl: filePath,
       });
 
       newEmployee
@@ -144,7 +141,6 @@ exports.addEmployee = async (req, res) => {
           });
         });
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).send("server error- " + error);
@@ -185,8 +181,6 @@ exports.employeeLogin = async (req, res) => {
     return res.status(500).json({ msg: "Server error" });
   }
 };
-
-
 
 exports.employeDelete = async (req, res) => {
   try {
