@@ -30,7 +30,7 @@ app.use(cors());
 app.use('/attendence',attendanceRouter);
 app.use('/empsignup',empSignup);
 app.use('/intern',internRoute);
-app.use('/emprouter', employeeRoute);
+app.use('/emproute', employeeRoute);
 app.use('/hr',hrRoute);
 app.use('/datetime', dateTimeRoutes)
 

@@ -3,18 +3,12 @@ const router = express.Router();
 const timeController = require('../controllers/dateTimeController');
 
 // Route to get all shifts
-router.get('/shifts', timeController.getShifts);
+router.get('/getallclock', timeController.getAllClocks);
 
-// Route to get a specific shift by ID
-router.get('/shifts/:id', timeController.getShifts);
+router.post('/starclock', timeController.startClock);
 
-router.post('/startshift', timeController.startShift);
+router.put('/stopclock/:id', timeController.stopClock);
 
-router.post('/endshift/:id', timeController.endShift);
-
-router.post('/startbreak', timeController.startBreak);
-
-router.post('/endbreak/:id', timeController.endBreak);
 
 
 
