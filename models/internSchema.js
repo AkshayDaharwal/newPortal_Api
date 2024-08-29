@@ -11,11 +11,10 @@ const internData = new Schema(
     lastName: {
       type: String,
     },
-
     email: {
       type: String,
     },
-    mobile: {
+    contact: {
       type: Number,
     },
     emergencyNo: {
@@ -27,14 +26,25 @@ const internData = new Schema(
     joiningDate: {
       type: String,
     },
-
-    address: {
+    batch: {
       type: String,
     },
-    currentBalance: {
+    correspondingAddress: {
+      type: String,
+    },
+    tolalFees: {
       type: Number,
     },
-    remainingBalance: {
+    Installment: {
+      type: Number,
+    },
+    dueFees: {
+      type: Number,
+    },
+    domain: {
+      type: Number,
+    },
+    trainername: {
       type: Number,
     },
   },

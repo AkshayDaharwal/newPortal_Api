@@ -7,34 +7,23 @@ const path = require('path');
 
 
 exports.employeFetch = async (req, res) => {
-  // try {
-  //   const id = req.params.id;
-  //   console.log(id);
-  //   if (!id) {
-  //     return res.status(400).json({ message: "id not found" });
-  //   }
-  //   const employe = await Employee.findById(id);
-  //   console.log(employe);
-  //   if (!employe) {
-  //     return res.status(400).json({ msg: "employe details not found" });
-  //   }
-  //   return res.status(200).json(employe);
-  // } catch (error) {
-  //   console.log(error);
-  //   return res.status(500).json({ message: error.message });
-  // }
   try {
-    const employe = await Employee.find();
-    if (!employe || employe.length === 0) {
-      return res.json({ message: "No photo found" });
+    const id = req.params.id;
+    console.log(id);
+    if (!id) {
+      return res.status(400).json({ message: "id not found" });
     }
-    return res.json({ message: "Dashboard retrieved successfully", employe });
-  } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ message: "Failed to fetch dashboard", error: err.message });
+    const employe = await Employee.findById(id);
+    console.log(employe);
+    if (!employe) {
+      return res.status(400).json({ msg: "employe details not found" });
+    }
+    return res.status(200).json(employe);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
+ 
 };
 
 // exports.employeFetchAll = async (req, res) => {
@@ -54,19 +43,15 @@ exports.employeFetch = async (req, res) => {
 
 exports.employeFetchAll = async (req, res) => {
   try {
-    console.log("Fetching employees...");
-    const employees = await Employee.find(); // Fetch all employees
-    console.log("Employees fetched:", employees);
-
-    if (!employees.length) {
-      console.log("No employees found.");
-      return res.status(404).json({ msg: "No employees found" });
+    const employees = await Employee.find(); // Fetch all interns from the database
+    console.log(employees);
+    if (!employees || employees.length === 0) {
+      return res.status(404).json({ msg: "No employees details found" });
     }
-
     return res.status(200).json(employees);
   } catch (error) {
-    console.error("Error fetching employees:", error);
-    return res.status(500).json({ message: "Server error" });
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -77,23 +62,26 @@ exports.addEmployee = async (req, res) => {
     firstName,
     lastName,
     email,
+    contact,
     mobile,
     emergencyNo,
     position,
     joiningDate,
-    address,
+    correspondenceAddress,
+    currentAddress,
     salary,
     aadharcard,
     pancard,
+    imgUrl
   } = req.body;
   try {
-    // const existingEmployee = await Employee.findOne({ email: email });
+    const existingEmployee = await Employee.findOne({ email: email });
 
-    // if (existingEmployee) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Employee with this email already exists" });
-    // }
+    if (existingEmployee) {
+      return res
+        .status(400)
+        .json({ message: "Employee with this email already exists" });
+    }
 
     // Generate a random password
     const passcode = generator.generate({

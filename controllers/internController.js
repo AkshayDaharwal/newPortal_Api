@@ -7,7 +7,7 @@ const path = require('path');
 
 
 exports.addIntern = async(req, res)=>{
-  const {  firstName, lastName, email, mobile,emergencyNo, position, joiningDate ,address,currentBalance,remainingBalance , imgUrl} = req.body;
+  const {  firstName, lastName, email, contact,emergencyNo ,correspondingAddress , batch , joiningDate , tolalFees, Installment , dueFees , domain, trainername} = req.body;
 
     try {
 
@@ -50,13 +50,17 @@ exports.addIntern = async(req, res)=>{
           firstName,
           lastName,
           email,
-          mobile,
+          contact,
           emergencyNo,
-          position,
-          joiningDate,
-          address,
-          currentBalance,
-          remainingBalance,
+          correspondingAddress,
+          batch,
+          joiningDate , 
+          tolalFees,
+          Installment , 
+          dueFees, 
+          aadharcard : filePath,
+          domain, 
+          trainername,
           imgUrl: filePath
          });
     
@@ -148,3 +152,10 @@ exports.internUpdate = async (req,res)=>{
   console.log(error)
 }
 };
+
+
+
+
+
+
+
