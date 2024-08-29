@@ -6,29 +6,38 @@ const { Schema } = mongoose;
 const employeeData = new Schema(
   {
     employeId: String,
+    
     firstName: {
       type: String,
+      require: true,
     },
     lastName: {
       type: String,
+      require: true,
     },
     email: {
       type: String,
+      require: true,
     },
     mobile: {
       type: Number,
+      require: true,
     },
     emergencyNo: {
       type: Number,
+      require: true,
     },
     position: {
       type: String,
+      require: true,
     },
     joiningDate: {
       type: String,
+      require: true,
     },
     address: {
       type: String,
+      require: true,
     },
     salary: {
       type: Number,
@@ -40,9 +49,11 @@ const employeeData = new Schema(
     },
     pancard: {
       type: String,
+      require: true,
     },
     imgUrl: {
       type: String,
+      require: true,
     },
   },
   { collection: "EmployeeData" }
