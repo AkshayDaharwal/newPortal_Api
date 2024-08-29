@@ -25,6 +25,8 @@ exports.getAllAttendance = async (req, res) => {
     res.status(500).json({ message: error.message }); // Handle any errors
   }
 };
+
+
 exports.addAttendence = async (req, res) => {
   const { employeId, status } = req.body;
   console.log({ employeId, status });

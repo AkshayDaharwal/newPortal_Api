@@ -170,6 +170,7 @@ exports.internFetch=async(req,res)=>{
      return res.status(500).json({message:error.message});
    }
 }
+
 exports.allFetchIntern = async (req, res) => {
   try {
     const interns = await Intern.find(); // Fetch all interns from the database
