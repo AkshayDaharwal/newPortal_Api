@@ -95,12 +95,16 @@ exports.addIntern = async(req, res)=>{
 //       const filePath = path.join(uploadDir, fileName);
 
 //       file.mv(filePath, (error) => {
-//         if (error) {
-//             return res.status(500).json({ message: "Error saving file", error });
-//         } else {
-//             console.log("File saved at: ", filePath);
-//         }
-//     });
+//           if (error) {
+//               return res.status(500).json({ message: "Error saving file", error });
+//           } else {
+//               console.log("File saved at: ", filePath);
+//           }
+//       });
+
+//       // Construct the relative URL for the files
+//       const fileUrl = `/files/${fileName}`;
+//       console.log("File URL to be saved: ", fileUrl);
 
 //       // Check if the intern already exists
 //       const existingIntern = await Intern.findOne({ email: email });
@@ -124,24 +128,27 @@ exports.addIntern = async(req, res)=>{
 //           dueFees,
 //           domain,
 //           trainername,
-//           aadharcard: `/files/${fileName}`,
-//           imgUrl: `/files/${fileName}`
+//           aadharcard: fileUrl,
+//           imgUrl: fileUrl
 //       });
+
+//       console.log("New Intern Data: ", newIntern);
 
 //       // Save the new intern to the database
 //       await newIntern.save();
 
-//       return res.status(200).json({ message: 'Intern added successfully', 
-//         Interndata: {
-//           imgUrl: newIntern.imgUrl,
-//           aadharcard: newIntern.aadharcard,
-//       } });
+//       return res.status(200).json({
+//           message: 'Intern added successfully',
+//           Interndata: newIntern
+//       });
 
 //   } catch (error) {
-//       console.log(error);
-//       res.status(500).send("server error - " + error);
+//       console.log("Error: ", error);
+//       res.status(500).send("Server error - " + error);
 //   }
 // };
+
+
 
 
 exports.internFetch=async(req,res)=>{

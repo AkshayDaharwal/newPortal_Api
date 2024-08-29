@@ -16,37 +16,29 @@ exports.getAttendence = async (req, res) => {
   }
 };
 
+exports.getAllAttendance = async (req, res) => {
+  try {
+    const attendanceRecords = await Attendance.find(); // Fetch all attendance records
+    console.log(attendanceRecords);
+    res.status(200).json(attendanceRecords); // Send the records as a JSON response
+  } catch (error) {
+    res.status(500).json({ message: error.message }); // Handle any errors
+  }
+};
 exports.addAttendence = async (req, res) => {
   const { employeId, status } = req.body;
   console.log({ employeId, status });
 
   try {
-    const employee = await Employe.findById(employeId); // Find by ObjectId
+    // Find the employee by _id (assuming employeId is the ObjectId)
+    const employee = await Employe.findById(employeId);
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
+    // Create a new attendance record
     const newAttendance = new Attendance({
-      employeId, // Already an ObjectId reference
-      status,
-    });
-
-    await newAttendance.save();
-    res.status(201).json(newAttendance);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-
-  try {
-    const employee = await Employe.findOne({ _id: employeId }); // Assuming employeId is _id
-    console.log(employee);
-
-    if (!employee) {
-      return res.status(404).json({ message: 'Employee not found' });
-    }
-
-    const newAttendance = new Attendance({
-      employeId: employee._id,
+      employeId: employee._id, // Ensure it's the ObjectId
       status,
     });
 
@@ -56,6 +48,47 @@ exports.addAttendence = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// exports.addAttendence = async (req, res) => {
+//   const { employeId, status } = req.body;
+//   console.log({ employeId, status });
+
+//   try {
+//     const employee = await Employe.findById(employeId); // Find by ObjectId
+//     if (!employee) {
+//       return res.status(404).json({ message: 'Employee not found' });
+//     }
+
+//     const newAttendance = new Attendance({
+//       employeId, // Already an ObjectId reference
+//       status,
+//     });
+
+//     await newAttendance.save();
+//     res.status(201).json(newAttendance);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+
+//   try {
+//     const employee = await Employe.findOne({ _id: employeId }); // Assuming employeId is _id
+//     console.log(employee);
+
+//     if (!employee) {
+//       return res.status(404).json({ message: 'Employee not found' });
+//     }
+
+//     const newAttendance = new Attendance({
+//       employeId: employee._id,
+//       status,
+//     });
+
+//     await newAttendance.save();
+//     res.status(201).json(newAttendance);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 exports.Absent = async (req, res) => {
   const { employeId, status } = req.body;

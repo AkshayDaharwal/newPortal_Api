@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const AttendanceSchema = new mongoose.Schema({
   employeId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref : 'Employee',
     required: true,
   },
@@ -13,7 +13,7 @@ const AttendanceSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['Present', 'Absent', 'Halfday'],
-    default: 'Absent',
+    require : true
   },
 });
 
