@@ -4,7 +4,7 @@ const Attendance = require("../models/attendenceSchema");
 
 // Get attendance for an employee
 exports.getAttendence = async (req, res) => {
-  const employeId = req.params.employeId;
+  const employeId = req.params.id;
   console.log(employeId);
 
   try {
@@ -27,7 +27,7 @@ exports.getAllAttendance = async (req, res) => {
 };
 
 
-exports.addAttendence = async (req, res) => {
+exports.addAttendance = async (req, res) => {
   const { employeId, status } = req.body;
   console.log({ employeId, status });
 
@@ -38,18 +38,60 @@ exports.addAttendence = async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    // Create a new attendance record
+    // Validate the status
+    const validStatus = ['Present', 'Absent', 'SickLeave', 'CasualLeave', 'Holiday', 'Halfday'];
+    if (!validStatus.includes(status)) {
+      return res.status(400).json({ message: 'Invalid attendance status' });
+    }
+
+    // Check if there's already an attendance record for the same employee and date
+    const existingAttendance = await Attendance.findOne({
+      employeId: employee._id,
+      date: new Date().setHours(0, 0, 0, 0) // Ensures the check is for the same day
+    });
+
+    if (existingAttendance) {
+      return res.status(400).json({ message: 'Attendance for today has already been recorded' });
+    }
+
+    // Create a new attendance record based on the status
     const newAttendance = new Attendance({
       employeId: employee._id, // Ensure it's the ObjectId
       status,
     });
 
     await newAttendance.save();
-    res.status(201).json(newAttendance);
+    res.status(201).json({ message: `${status} attendance recorded successfully`, attendance: newAttendance });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+// real 
+// exports.addAttendence = async (req, res) => {
+//   const { employeId, status } = req.body;
+//   console.log({ employeId, status });
+
+//   try {
+//     // Find the employee by _id (assuming employeId is the ObjectId)
+//     const employee = await Employe.findById(employeId);
+//     if (!employee) {
+//       return res.status(404).json({ message: 'Employee not found' });
+//     }
+
+//     // Create a new attendance record
+//     const newAttendance = new Attendance({
+//       employeId: employee._id, // Ensure it's the ObjectId
+//       status,
+//     });
+
+//     await newAttendance.save();
+//     res.status(201).json(newAttendance);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 // exports.addAttendence = async (req, res) => {
 //   const { employeId, status } = req.body;
@@ -92,32 +134,33 @@ exports.addAttendence = async (req, res) => {
 //   }
 // };
 
-exports.Absent = async (req, res) => {
-  const { employeId, status } = req.body;
 
-  try {
-    const employee = await Employe.findOne({ employeId });
-    console.log(employee);
+// exports.Absent = async (req, res) => {
+//   const { employeId, status } = req.body;
 
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found in absent" });
-    }
+//   try {
+//     const employee = await Employe.findOne({ employeId });
+//     console.log(employee);
 
-    if (status !== "absent") {
-      return res.status(400).json({ message: "Invalid status for absence" });
-    }
+//     if (!employee) {
+//       return res.status(404).json({ message: "Employee not found in absent" });
+//     }
 
-    const newAttendance = new Attendance({
-      employeId : employee._id,
-      status,
-    });
+//     if (status !== "absent") {
+//       return res.status(400).json({ message: "Invalid status for absent" });
+//     }
 
-    await newAttendance.save();
-    res.status(201).json(newAttendance);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+//     const newAttendance = new Attendance({
+//       employeId : employee._id,
+//       status,
+//     });
+
+//     await newAttendance.save();
+//     res.status(201).json(newAttendance);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 
 
