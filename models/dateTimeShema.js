@@ -4,14 +4,22 @@ const { type } = require('os');
 const Schema = mongoose.Schema;
 
 const DateTimeSchema = new Schema({
-   startTime: {
+    employeeId: {
+        type: String,
+        required: true,
+      },
+      startTime: {
         type: Date,
-        // default: Date.now,
-        require : true
-    },
-    stopTime: {
+        required: true,
+        default: Date.now,
+      },
+      endTime: {
         type: Date,
-    },
+      },
+      totalTimeWorked: {
+        type: String, // Time in seconds
+        default:  "00:00:00",
+      },
     
 
 },{ timestamps: true });
