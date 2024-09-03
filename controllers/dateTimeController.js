@@ -187,8 +187,8 @@ const TimeLog = require("../models/dateTimeShema");
 exports.startTime = async (req, res) => {
   const { employeeId } = req.body;
 
-  // Find the latest time log entry for the employee that has been stopped (endTime is not null)
-  let timeLog = await TimeLog.findOne({ employeeId  });
+  // Find the latest time log entry for the employee
+  let timeLog = await TimeLog.findOne({ employeeId, endTime: null });
 
   if (!timeLog) {
     // If no active session is found, create a new one
@@ -199,13 +199,12 @@ exports.startTime = async (req, res) => {
       totalTimeWorkedInSeconds: 0, // Initialize total time worked in seconds
     });
   } else {
-    // If an active session is found, it means we have an unfinished session, so resume from there
-    console.log("Resuming the existing timer session");
-    timeLog.startTime = new Date();
+    // If an active session is found, it means the timer was not stopped correctly
+    return res.status(400).json({ message: "An active session already exists" });
   }
 
   await timeLog.save();
-  res.status(201).json({ message: "Timer started or resumed" });
+  res.status(201).json({ message: "Timer started" });
 };
 
 // Route to stop the timer and calculate worked time
@@ -213,7 +212,7 @@ exports.stopTime = async (req, res) => {
   const { employeeId } = req.body;
 
   // Find the latest active time log entry
-  const timeLog = await TimeLog.findOne({ employeeId , endTime: null });
+  const timeLog = await TimeLog.findOne({ employeeId, endTime: null });
 
   if (!timeLog) {
     return res.status(400).send("No active timer found for this employee");
@@ -230,7 +229,7 @@ exports.stopTime = async (req, res) => {
   console.log("Time difference in seconds:", diffInSeconds);
 
   // Add the newly calculated time to the previously worked time
-  timeLog.totalTimeWorkedInSeconds = (timeLog.totalTimeWorkedInSeconds || 0) + diffInSeconds;
+  timeLog.totalTimeWorkedInSeconds += diffInSeconds;
 
   console.log("Total time worked in seconds:", timeLog.totalTimeWorkedInSeconds);
 
