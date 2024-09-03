@@ -5,7 +5,8 @@ const router = express.Router();
 const newAddEmployeeController = require('../controllers/newEmployyeController')
 
 
-router.post("/newAddEmployee", newAddEmployeeController.newAddEmployee)
+// router.post("/newAddEmployee", newAddEmployeeController.newAddEmployee)
+router.post('/newAddEmployee', newAddEmployeeController.newAddEmployee);
 
 
 module.exports = router ;
