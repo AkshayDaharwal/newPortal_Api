@@ -10,17 +10,19 @@ const hrRoute = require('./views/hrroute.js');
 const dateTimeRoutes = require('./views/dateTimeRouter.js')
 const newAddEmployee = require('./views/newEmployeeRouter.js')
 const fileupload = require("express-fileupload")
+const {errorHandler} = require('./middelware/errorHandler.js')
 const cors = require('cors');
 
 
 dotenv.config();
+
 
 const app = express();
 app.use(express.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(errorHandler);
 app.use(fileupload());
 
 const PORT = process.env.PORT || 8000
