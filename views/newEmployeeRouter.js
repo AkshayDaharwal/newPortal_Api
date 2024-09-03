@@ -2,11 +2,11 @@ const express = require('express') ;
 
 const router = express.Router();
 
-const newAddEmployeeController = require('../controllers/newEmployyeController')
+const {newAddEmployee} = require('../controllers/newEmployyeController')
 
 
 // router.post("/newAddEmployee", newAddEmployeeController.newAddEmployee)
-router.post('/newAddEmployee', newAddEmployeeController.newAddEmployee);
+router.post('/newAddEmployee', newAddEmployee);
 
 
 module.exports = router ;
