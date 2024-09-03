@@ -1,14 +1,14 @@
-const Employe = require("../models/employeeModel");
+const Employee = require("../models/employeeModel");
 const Attendance = require("../models/attendenceSchema");
 
 
 // Get attendance for an employee
 exports.getAttendence = async (req, res) => {
-  const employeId = req.params.id;
-  console.log(employeId);
+  const employeeId = req.params.id;
+  console.log(employeeId);
 
   try {
-    const attendanceRecords = await Attendance.find({ employeId });
+    const attendanceRecords = await Attendance.find({ employeeId });
     console.log(attendanceRecords);
     res.status(200).json(attendanceRecords);
   } catch (error) {
@@ -28,12 +28,12 @@ exports.getAllAttendance = async (req, res) => {
 
 
 exports.addAttendance = async (req, res) => {
-  const { employeId, status } = req.body;
-  console.log({ employeId, status });
+  const { employeeId, status } = req.body;
+  console.log({ employeeId, status });
 
   try {
     // Find the employee by _id (assuming employeId is the ObjectId)
-    const employee = await Employe.findById(employeId);
+    const employee = await Employee.findById(employeeId);
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
     }
@@ -46,7 +46,7 @@ exports.addAttendance = async (req, res) => {
 
     // Check if there's already an attendance record for the same employee and date
     const existingAttendance = await Attendance.findOne({
-      employeId: employee._id,
+      employeeId: employee._id,
       date: new Date().setHours(0, 0, 0, 0) // Ensures the check is for the same day
     });
 
@@ -56,7 +56,7 @@ exports.addAttendance = async (req, res) => {
 
     // Create a new attendance record based on the status
     const newAttendance = new Attendance({
-      employeId: employee._id, // Ensure it's the ObjectId
+      employeeId: employee._id, // Ensure it's the ObjectId
       status,
     });
 

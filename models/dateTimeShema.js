@@ -16,9 +16,13 @@ const DateTimeSchema = new Schema({
       endTime: {
         type: Date,
       },
+      totalTimeWorkedInSeconds: {
+        type: String, // Store total worked time in seconds
+        default: 0,
+      },
       totalTimeWorked: {
-        type: String, // Time in seconds
-        default:  "00:00:00",
+        type: String, // Time in HH:MM:SS format
+        default: "00:00:00",
       },
     
 

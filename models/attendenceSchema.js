@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const AttendanceSchema = new mongoose.Schema({
-  employeId: {
+  employeeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref : 'Employee',
     required: true,
