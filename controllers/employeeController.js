@@ -129,14 +129,14 @@ exports.addEmployee = async (req, res) => {
       newEmployee
         .save()
         .then(() => {
-          res.status(201).json({
-            message: "Rescue added successfully",
+          res.status(200).json({
+            message: "Employee added successfully",
             newEmployee,
           });
         })
         .catch((saveError) => {
           res.status(400).json({
-            message: "Failed to add rescue",
+            message: "Failed to add employee",
             error: saveError.message,
           });
         });

@@ -8,6 +8,7 @@ const empSignup = require('./views/empSign.js');
 const employeeRoute = require("./views/employee.js");
 const hrRoute = require('./views/hrroute.js');
 const dateTimeRoutes = require('./views/dateTimeRouter.js')
+const newAddEmployee = require('./views/newEmployeeRouter.js')
 const fileupload = require("express-fileupload")
 const cors = require('cors');
 
@@ -36,6 +37,7 @@ app.use('/intern',internRoute);
 app.use('/emproute', employeeRoute);
 app.use('/hr',hrRoute);
 app.use('/datetime', dateTimeRoutes)
+app.use('/addEmployee', newAddEmployee)
 
 
 app.listen(PORT, ()=>{
