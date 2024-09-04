@@ -5,7 +5,8 @@ const timeController = require('../controllers/dateTimeController');
 // Route to get all shifts
 router.get('/getAllTime', timeController.getAllTime)
 
-router.post('/startTime', timeController.startTime)
+router.post('/startTime', timeController.startTime);
+
 
 router.post('/stopTime', timeController.stopTime)
 
