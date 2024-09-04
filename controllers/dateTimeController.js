@@ -185,7 +185,9 @@ const TimeLog = require("../models/dateTimeShema");
 
 // Route to start the timer
 exports.startTime = async (req, res) => {
-  const { employeeId } = req.body;
+  
+  const { employeeId } = req.body
+
 
   // Find the latest time log entry for the employee
   let timeLog = await TimeLog.findOne({ employeeId, endTime: null });
