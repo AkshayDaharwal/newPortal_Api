@@ -365,7 +365,9 @@ exports.getAllTime = async (req, res) => {
   const totalWorked = timeLogs.reduce(
     (total, log) => total + (log.totalTimeWorkedInSeconds || 0),
     0
-  );
+  )
+
+  
 
   // Convert to hours, minutes, and seconds
   const hours = Math.floor(totalWorked / 3600);
