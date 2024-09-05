@@ -292,7 +292,6 @@
 
 const TimeLog = require("../models/dateTimeShema");
 
-// Route to start or resume the timer
 exports.startTime = async (req, res) => {
   const { employeeId } = req.body;
 
@@ -301,7 +300,6 @@ exports.startTime = async (req, res) => {
 
   if (!timeLog) {
     // If no entry is found, create a new one
-
     timeLog = new TimeLog({
       employeeId,
       startTime: new Date(),
@@ -357,8 +355,6 @@ exports.stopTime = async (req, res) => {
     timeLog
   });
 };
-
-
 
 // // Route to get the total time worked by an employee
 exports.getAllTime = async (req, res) => {
