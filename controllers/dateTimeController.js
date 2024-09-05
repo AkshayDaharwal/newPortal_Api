@@ -301,6 +301,7 @@ exports.startTime = async (req, res) => {
 
   if (!timeLog) {
     // If no entry is found, create a new one
+    
     timeLog = new TimeLog({
       employeeId,
       startTime: new Date(),
