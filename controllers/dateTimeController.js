@@ -181,60 +181,161 @@
 
 // 2nd new code 
 
+// const TimeLog = require("../models/dateTimeShema");
+
+// // Route to start the timer
+// exports.startTime = async (req, res) => {
+//   const { employeeId } = req.body;
+
+
+//   // Find the latest time log entry for the employee
+//   let timeLog = await TimeLog.findOne({ employeeId, endTime: null });
+  
+  
+
+//   if (!timeLog) {
+//     // If no active session is found, create a new one
+//     console.log("Starting a new timer session");
+//     timeLog = new TimeLog({
+//       employeeId,
+//       startTime: new Date(),
+//       totalTimeWorkedInSeconds: 0, // Initialize total time worked in seconds
+//     });
+//   } else {
+//     // If an active session is found, it means the timer was not stopped correctly
+//     return res.status(400).json({ message: "An active session already exists" });
+//   }
+
+//   await timeLog.save();
+//   res.status(201).json({ message: "Timer started" });
+// };
+
+// // Route to stop the timer and calculate worked time
+// exports.stopTime = async (req, res) => {
+//   const { employeeId } = req.body;
+
+//   // Find the latest active time log entry
+//   const timeLog = await TimeLog.findOne({ employeeId, endTime: null });
+
+//   if (!timeLog) {
+//     return res.status(400).send("No active timer found for this employee");
+//   }
+
+//   timeLog.endTime = new Date(); // Capture the current UTC time
+
+//   console.log("Start Time:", timeLog.startTime.toISOString());
+//   console.log("End Time:", timeLog.endTime.toISOString());
+
+//   // Calculate the difference between startTime and endTime in seconds
+//   const diffInSeconds = Math.floor((timeLog.endTime.getTime() - timeLog.startTime.getTime()) / 1000);
+
+//   console.log("Time difference in seconds:", diffInSeconds);
+
+//   // Add the newly calculated time to the previously worked time
+//   timeLog.totalTimeWorkedInSeconds += diffInSeconds;
+
+//   console.log("Total time worked in seconds:", timeLog.totalTimeWorkedInSeconds);
+
+//   // Convert to hours, minutes, and seconds
+//   const hours = Math.floor(timeLog.totalTimeWorkedInSeconds / 3600);
+//   const minutes = Math.floor((timeLog.totalTimeWorkedInSeconds % 3600) / 60);
+//   const seconds = timeLog.totalTimeWorkedInSeconds % 60;
+
+//   // Format time as HH:MM:SS
+//   const formattedTime = [
+//     hours.toString().padStart(2, "0"),
+//     minutes.toString().padStart(2, "0"),
+//     seconds.toString().padStart(2, "0")
+//   ].join(":");
+
+//   console.log("Formatted Time:", formattedTime);
+
+//   timeLog.totalTimeWorked = formattedTime;
+
+//   await timeLog.save();
+//   res.status(200).json({
+//     message: "Timer stopped",
+//     totalTimeWorked: timeLog.totalTimeWorked,
+//   });
+// };
+
+// // Route to get the total time worked by an employee
+// exports.getAllTime = async (req, res) => {
+//   const { employeeId } = req.params;
+
+//   const timeLogs = await TimeLog.find({ employeeId });
+//   const totalWorkedInSeconds = timeLogs.reduce(
+//     (total, log) => total + (log.totalTimeWorkedInSeconds || 0),
+//     0
+//   );
+
+//   console.log("Total worked time in seconds across all logs:", totalWorkedInSeconds);
+
+//   // Convert to hours, minutes, and seconds
+//   const hours = Math.floor(totalWorkedInSeconds / 3600);
+//   const minutes = Math.floor((totalWorkedInSeconds % 3600) / 60);
+//   const seconds = totalWorkedInSeconds % 60;
+
+//   // Format time as HH:MM:SS
+//   const formattedTotalTime = [
+//     hours.toString().padStart(2, "0"),
+//     minutes.toString().padStart(2, "0"),
+//     seconds.toString().padStart(2, "0")
+//   ].join(":");
+
+//   res.status(200).json({
+//     employeeId,
+//     totalTimeWorked: formattedTotalTime,
+//   });
+// };
+
+
 const TimeLog = require("../models/dateTimeShema");
 
-// Route to start the timer
+// Route to start or resume the timer
 exports.startTime = async (req, res) => {
   const { employeeId } = req.body;
 
-
   // Find the latest time log entry for the employee
-  let timeLog = await TimeLog.findOne({ employeeId, endTime: null });
-  
-  
+  let timeLog = await TimeLog.findOne({ employeeId });
 
   if (!timeLog) {
-    // If no active session is found, create a new one
-    console.log("Starting a new timer session");
+    // If no entry is found, create a new one
     timeLog = new TimeLog({
       employeeId,
       startTime: new Date(),
       totalTimeWorkedInSeconds: 0, // Initialize total time worked in seconds
     });
+    console.log("Starting a new timer session");
   } else {
-    // If an active session is found, it means the timer was not stopped correctly
-    return res.status(400).json({ message: "An active session already exists" });
+    // If an entry exists, just update the start time to resume
+    timeLog.startTime = new Date();
+    console.log("Resuming the timer session");
   }
 
   await timeLog.save();
-  res.status(201).json({ message: "Timer started" });
+  res.status(201).json({ message: "Timer started or resumed", timeLog });
 };
 
-// Route to stop the timer and calculate worked time
+// Route to stop the timer and accumulate worked time
 exports.stopTime = async (req, res) => {
   const { employeeId } = req.body;
 
   // Find the latest active time log entry
-  const timeLog = await TimeLog.findOne({ employeeId, endTime: null });
+  let timeLog = await TimeLog.findOne({ employeeId });
 
-  if (!timeLog) {
-    return res.status(400).send("No active timer found for this employee");
+  if (!timeLog || !timeLog.startTime) {
+    return res.status(400).json({ message: "No active timer found for this employee" });
   }
 
-  timeLog.endTime = new Date(); // Capture the current UTC time
-
-  console.log("Start Time:", timeLog.startTime.toISOString());
-  console.log("End Time:", timeLog.endTime.toISOString());
+  // End the current session
+  timeLog.endTime = new Date();
 
   // Calculate the difference between startTime and endTime in seconds
   const diffInSeconds = Math.floor((timeLog.endTime.getTime() - timeLog.startTime.getTime()) / 1000);
 
-  console.log("Time difference in seconds:", diffInSeconds);
-
-  // Add the newly calculated time to the previously worked time
+  // Accumulate the total time worked in this session
   timeLog.totalTimeWorkedInSeconds += diffInSeconds;
-
-  console.log("Total time worked in seconds:", timeLog.totalTimeWorkedInSeconds);
 
   // Convert to hours, minutes, and seconds
   const hours = Math.floor(timeLog.totalTimeWorkedInSeconds / 3600);
@@ -242,39 +343,34 @@ exports.stopTime = async (req, res) => {
   const seconds = timeLog.totalTimeWorkedInSeconds % 60;
 
   // Format time as HH:MM:SS
-  const formattedTime = [
+  timeLog.totalTimeWorked = [
     hours.toString().padStart(2, "0"),
     minutes.toString().padStart(2, "0"),
     seconds.toString().padStart(2, "0")
   ].join(":");
 
-  console.log("Formatted Time:", formattedTime);
-
-  timeLog.totalTimeWorked = formattedTime;
-
   await timeLog.save();
   res.status(200).json({
-    message: "Timer stopped",
+    message: "Timer stopped and time added",
     totalTimeWorked: timeLog.totalTimeWorked,
+    timeLog
   });
 };
 
-// Route to get the total time worked by an employee
+// // Route to get the total time worked by an employee
 exports.getAllTime = async (req, res) => {
   const { employeeId } = req.params;
 
   const timeLogs = await TimeLog.find({ employeeId });
-  const totalWorkedInSeconds = timeLogs.reduce(
+  const totalWorked = timeLogs.reduce(
     (total, log) => total + (log.totalTimeWorkedInSeconds || 0),
     0
   );
 
-  console.log("Total worked time in seconds across all logs:", totalWorkedInSeconds);
-
   // Convert to hours, minutes, and seconds
-  const hours = Math.floor(totalWorkedInSeconds / 3600);
-  const minutes = Math.floor((totalWorkedInSeconds % 3600) / 60);
-  const seconds = totalWorkedInSeconds % 60;
+  const hours = Math.floor(totalWorked / 3600);
+  const minutes = Math.floor((totalWorked % 3600) / 60);
+  const seconds = totalWorked % 60;
 
   // Format time as HH:MM:SS
   const formattedTotalTime = [
