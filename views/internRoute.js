@@ -7,9 +7,11 @@ const internController = require('../controllers/internController.js')
 
 //router.post("/internLogin", internController.employeeLogin);
 
+
 router.get("/fetchallintern",internController.allFetchIntern);
 
-router.get("/fetchintern/:id",internController.internFetch);
+router.get("/fetchintern/:id",internController.internFetch)
+
 
 router.post("/addintern", internController.addIntern);
 
