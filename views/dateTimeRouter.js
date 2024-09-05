@@ -7,7 +7,6 @@ router.get('/getAllTime', timeController.getAllTime);
 
 router.post('/startTime', timeController.startTime);
 
-
 router.post('/stopTime', timeController.stopTime);
 
 

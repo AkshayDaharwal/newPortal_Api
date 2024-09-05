@@ -301,7 +301,7 @@ exports.startTime = async (req, res) => {
 
   if (!timeLog) {
     // If no entry is found, create a new one
-    
+
     timeLog = new TimeLog({
       employeeId,
       startTime: new Date(),
@@ -358,6 +358,8 @@ exports.stopTime = async (req, res) => {
   });
 };
 
+
+
 // // Route to get the total time worked by an employee
 exports.getAllTime = async (req, res) => {
   const { employeeId } = req.params;
@@ -367,8 +369,6 @@ exports.getAllTime = async (req, res) => {
     (total, log) => total + (log.totalTimeWorkedInSeconds || 0),
     0
   )
-
-  
 
   // Convert to hours, minutes, and seconds
   const hours = Math.floor(totalWorked / 3600);
@@ -387,3 +387,5 @@ exports.getAllTime = async (req, res) => {
     totalTimeWorked: formattedTotalTime,
   });
 };
+
+
