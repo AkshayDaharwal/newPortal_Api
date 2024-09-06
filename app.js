@@ -27,6 +27,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(errorHandler);
 app.use(fileupload());
 
+const cloudinary = require("./config/cloudinary.js");
+cloudinary.cloudinaryConnect();
+
 const PORT = process.env.PORT || 8000
 
 app.get('/', (req, res)=>{

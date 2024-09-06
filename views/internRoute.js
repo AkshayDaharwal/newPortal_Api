@@ -12,7 +12,6 @@ router.get("/fetchallintern",internController.allFetchIntern);
 
 router.get("/fetchintern/:id",internController.internFetch)
 
-
 router.post("/addintern", internController.addIntern);
 
 router.delete('/interndelete/:id',internController.internDelete);

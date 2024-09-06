@@ -147,6 +147,45 @@ exports.addEmployee = async (req, res) => {
   }
 };
 
+// function isFileTypeSupported(type , supportedTypes){
+//     return supportedTypes.includes(type);
+// }
+
+// async
+
+// exports.imageUpload = async (req, res)=>{
+//   try {
+//     const { employeId,
+//       firstName,
+//       lastName,
+//       email,
+//       contact,
+//       mobile,
+//       emergencyNo,
+//       position,
+//       joiningDate,
+//       correspondenceAddress,
+//       currentAddress,
+//       salary,
+//     } = req.body ;
+
+//     const file = req.files.imgFile ;
+
+//     const supportedTypes = [ "jpg", "jpeg", "png"];
+
+//     const fileType = file.name.toLowerCase();
+
+//     if(!isFileTypeSupported(fileType , supportedTypes)){
+//       return res.status(400).json({ message : "file formate not supported"})
+//     }
+
+//   } catch (error) {
+    
+//   }
+// }
+
+
+
 exports.employeeLogin = async (req, res) => {
   try {
     const { email, password, role } = req.body;

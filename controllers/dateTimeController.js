@@ -356,32 +356,43 @@ exports.stopTime = async (req, res) => {
   });
 };
 
+
 // // Route to get the total time worked by an employee
 exports.getAllTime = async (req, res) => {
-  const { employeeId } = req.params;
+  try {
+    // Fetch all time logs for all employees
+    const timeLogs = await TimeLog.find({});
 
-  const timeLogs = await TimeLog.find({ employeeId });
-  const totalWorked = timeLogs.reduce(
-    (total, log) => total + (log.totalTimeWorkedInSeconds || 0),
-    0
-  )
+    // Create an object to accumulate total time for each employee
+    const totalTimePerEmployee = {};
 
-  // Convert to hours, minutes, and seconds
-  const hours = Math.floor(totalWorked / 3600);
-  const minutes = Math.floor((totalWorked % 3600) / 60);
-  const seconds = totalWorked % 60;
+    // Loop through each time log and accumulate the total time for each employee
+    timeLogs.forEach((log) => {
+      const employeeId = log.employeeId;
 
-  // Format time as HH:MM:SS
-  const formattedTotalTime = [
-    hours.toString().padStart(2, "0"),
-    minutes.toString().padStart(2, "0"),
-    seconds.toString().padStart(2, "0")
-  ].join(":");
+      if (!totalTimePerEmployee[employeeId]) {
+        totalTimePerEmployee[employeeId] = 0;
+      }
 
-  res.status(200).json({
-    employeeId,
-    totalTimeWorked: formattedTotalTime,
-  });
+      // Add the time worked for this log to the total time for that employee
+      totalTimePerEmployee[employeeId] += log.totalTimeWorked || 0;
+    });
+
+    // Return the total time worked for all employees
+    res.status(200).json({
+      totalTimeWorked: totalTimePerEmployee,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error calculating total time for all employees",
+    });
+  }
 };
+
+
+
+
+
+
 
 

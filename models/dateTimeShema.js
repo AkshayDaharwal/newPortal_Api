@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const DateTimeSchema = new Schema({
     employeeId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
       },
       startTime: {
