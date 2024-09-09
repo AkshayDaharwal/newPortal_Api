@@ -4,6 +4,7 @@ const generator = require("generate-password");
 const jwt = require("../config/genrateToken");
 const fs = require("fs");
 const path = require("path");
+const cloudinary = require("cloudinary").v2 ;
 
 exports.employeFetch = async (req, res) => {
   try {
@@ -102,7 +103,7 @@ exports.addEmployee = async (req, res) => {
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir);
     }
-    const filePath = path.join(uploadDir, Date.now() + "_" + file.name);
+    const filePath = path.join(uploadDir, Date.now() + "_" + file.name); // "_" + file.name
 
     file.mv(filePath, (error) => {
       if (error) {
@@ -147,44 +148,148 @@ exports.addEmployee = async (req, res) => {
   }
 };
 
-// function isFileTypeSupported(type , supportedTypes){
-//     return supportedTypes.includes(type);
-// }
+function isFileTypeSupported(type , supportedTypes){
+    return supportedTypes.includes(type);
+}
 
-// async
 
-// exports.imageUpload = async (req, res)=>{
-//   try {
-//     const { employeId,
-//       firstName,
-//       lastName,
-//       email,
-//       contact,
-//       mobile,
-//       emergencyNo,
-//       position,
-//       joiningDate,
-//       correspondenceAddress,
-//       currentAddress,
-//       salary,
-//     } = req.body ;
+async function uploadFileToCloudinary(file, folder , quality) {
+  const options = { folder };
 
-//     const file = req.files.imgFile ;
+  if(quality){
+    options.quality = quality ;
+  }
+  options.resource_type = "auto";
 
-//     const supportedTypes = [ "jpg", "jpeg", "png"];
+  return await cloudinary.uploader.upload(file.tempFilePath, options);
+}
 
-//     const fileType = file.name.toLowerCase();
 
-//     if(!isFileTypeSupported(fileType , supportedTypes)){
-//       return res.status(400).json({ message : "file formate not supported"})
-//     }
+exports.imageUpload = async (req, res)=>{
+  try {
+    const { employeId,
+      firstName,
+      lastName,
+      email,
+      contact,
+      mobile,
+      emergencyNo,
+      position,
+      joiningDate,
+      correspondenceAddress,
+      currentAddress,
+      salary,
+    } = req.body ;
 
-//   } catch (error) {
+    const file = req.files.imgFile ;
+    console.log(file)
+
+    const supportedTypes = [ "jpg", "jpeg", "png", "pdf"];
+
+    const fileType = file.name.split('.')[1].toLowerCase();
+    console.log("file Type", fileType)
     
-//   }
-// }
+    if(!isFileTypeSupported(fileType , supportedTypes)){
+      return res.status(400).json({ message : "file formate not supported"})
+    } 
 
+    //upload file to cloudinary
+    const response = await uploadFileToCloudinary(file, "RishusInfotech")
+   console.log(response)
+      //db me entry 
+      const fileData = await Employee.create({
 
+        employeId,
+        firstName,
+        lastName,
+        email,
+        mobile,
+        correspondenceAddress,
+        currentAddress,
+        contact,
+        emergencyNo,
+        position,
+        joiningDate,
+        salary,
+        aadharcard: response.secure_url,
+        pancard: response.secure_url,
+        imgUrl: response.secure_url,
+
+      })
+
+      res.status(200).json({message : "Image successfully uploaded at", imgUrl: response.secure_url})
+  } catch (error) {
+   console.error(error);
+   res.status(400).json({
+    success : false,
+    message : "Something went wrong"
+   })
+  }
+}  
+
+exports.imgSize = async (req,res)=>{
+
+    try {
+      const { employeId,
+        firstName,
+        lastName,
+        email,
+        contact,
+        mobile,
+        emergencyNo,
+        position,
+        joiningDate,
+        correspondenceAddress,
+        currentAddress,
+        salary,
+      } = req.body ;
+  
+      const file = req.files.imgFile ;
+      console.log(file)
+  
+      const supportedTypes = [ "jpg", "jpeg", "png", "pdf"];
+  
+      const fileType = file.name.split('.')[1].toLowerCase();
+      console.log("file Type", fileType)
+      
+      if(!isFileTypeSupported(fileType , supportedTypes)){
+        return res.status(400).json({ message : "file formate not supported"})
+      } 
+  
+      //upload file to cloudinary
+      const response = await uploadFileToCloudinary(file, "RishusInfotech", 20)
+     console.log(response)
+        //db me entry 
+        const fileData = await Employee.create({
+  
+          employeId,
+          firstName,
+          lastName,
+          email,
+          mobile,
+          correspondenceAddress,
+          currentAddress,
+          contact,
+          emergencyNo,
+          position,
+          joiningDate,
+          salary,
+          aadharcard: response.secure_url,
+          pancard: response.secure_url,
+          imgUrl: response.secure_url,
+  
+        })
+  
+        res.status(200).json({message : "Image successfully uploaded at", imgUrl: response.secure_url})
+      
+    } catch (error) {
+      console.error(error);
+   res.status(400).json({
+    success : false,
+    message : "Something went wrong in ImgSize"
+   })
+    }
+}
 
 exports.employeeLogin = async (req, res) => {
   try {

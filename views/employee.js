@@ -2,19 +2,19 @@ const express = require("express");
 
 const router = express.Router();
 
-const employeeController = require('../controllers/employeeController.js')
+const {employeFetchAll, employeFetch ,addEmployee , employeeLogin , employeDelete , employeUpdate , imageUpload} = require('../controllers/employeeController.js')
 
-router.get("/fetchall",employeeController.employeFetchAll);
+router.get("/fetchall",employeFetchAll);
 
-router.get("/fetchemp/:id",employeeController.employeFetch);
+router.get("/fetchemp/:id",employeFetch);
 
-router.post("/addEmp", employeeController.addEmployee);
+router.post("/addEmp", imageUpload,  addEmployee);
 
-router.post("/empLogin", employeeController.employeeLogin);
+router.post("/empLogin", employeeLogin);
 
-router.delete('/empdelete/:id',employeeController.employeDelete);
+router.delete('/empdelete/:id', employeDelete);
 
-router.put('/update/:id',employeeController.employeUpdate);
+router.put('/update/:id', employeUpdate);
 
 module.exports = router;
 

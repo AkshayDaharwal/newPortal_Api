@@ -14,6 +14,8 @@ const {errorHandler} = require('./middelware/errorHandler.js')
 const cors = require('cors');
 
 
+
+
 dotenv.config();
 
 
@@ -25,7 +27,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(errorHandler);
-app.use(fileupload());
+app.use(fileupload(
+   {
+     useTempFiles : true,
+    tempFileDir : '/tmp/'
+   }
+));
 
 const cloudinary = require("./config/cloudinary.js");
 cloudinary.cloudinaryConnect();
