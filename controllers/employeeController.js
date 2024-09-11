@@ -92,7 +92,7 @@ exports.addEmployee = async (req, res) => {
 
     if (!req.files || !req.files.file) {
       return res.status(400).json({
-        message: "No file uploaded",
+        message: "No file uploaded", 
       });
     }
 

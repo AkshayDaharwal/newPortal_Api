@@ -46,6 +46,7 @@ app.get('/', (req, res)=>{
 app.use(cors());
 
 
+
 app.use('/attendence',attendanceRouter);
 app.use('/empsignup',empSignup);
 app.use('/intern',internRoute);
@@ -61,3 +62,5 @@ app.listen(PORT, ()=>{
 
 
 module.exports = app 
+
+
