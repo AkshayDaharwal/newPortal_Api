@@ -9,6 +9,9 @@ router.get("/newEmpgetAll", newAddEmployeeController.newEmpGetAll)
 
 router.post("/newAddEmployee", newAddEmployeeController.newAddEmployee)
 
+router.delete("/newEmpDelete/:id", newAddEmployeeController.newEmployeeDelete)
+
+
 
 module.exports = router ;
 

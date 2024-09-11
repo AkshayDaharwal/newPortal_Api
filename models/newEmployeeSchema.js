@@ -1,14 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
+const addEmployee = new mongoose.Schema(
+  {
+    employeId: String,
 
-const addEmployee = new mongoose.Schema({
-    fullName : {
-        type : String,
-        rquire : true
-    }
-})
+    fullName: {
+      type: String,
+      rquire: true,
+    },
+  },
+  { collection: "newEmployeeData" }
+);
 
-
-
-module.exports = mongoose.model("newAddEmployee", addEmployee)
-
+module.exports = mongoose.model("newAddEmployee", addEmployee);
