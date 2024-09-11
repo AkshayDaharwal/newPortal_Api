@@ -2,13 +2,13 @@ const express = require("express");
 
 const router = express.Router();
 
-const {employeFetchAll, employeFetch ,addEmployee , employeeLogin , employeDelete , employeUpdate , imageUpload} = require('../controllers/employeeController.js')
+const {employeFetchAll, employeFetch ,addEmployee , employeeLogin , employeDelete , employeUpdate , imageUpload , imgSize} = require('../controllers/employeeController.js')
 
-router.get("/fetchall",employeFetchAll);
+router.get("/fetchall",employeFetchAll , imageUpload , imgSize);
 
-router.get("/fetchemp/:id",employeFetch);
+router.get("/fetchemp/:id",employeFetch , imageUpload , imgSize);
 
-router.post("/addEmp", imageUpload,  addEmployee);
+router.post("/addEmp", imageUpload,  addEmployee , imgSize);
 
 router.post("/empLogin", employeeLogin);
 

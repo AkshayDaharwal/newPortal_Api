@@ -43,9 +43,9 @@ exports.newEmployeeDelete = async (req, res)=>{
   try {
     
     const id = req.params.id ;
-
+    console.log(id);
     if(!id){
-      res.status(401).json({message : "new Employee id is not found"});
+      return res.status(400).json({message : "new Employee id is not found"});
 
     }
     const employe = await  newAddEmployee.findByIdAndDelete(id)
@@ -55,7 +55,7 @@ exports.newEmployeeDelete = async (req, res)=>{
     return res.status(200).json({message : "new Employee Deleted successfully", employe})
 
   } catch (error) {
-    return res.status(400).json({ message : error.message})
+    return res.status(500).json({ message : error.message})
   }
 
 
