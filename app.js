@@ -13,9 +13,6 @@ const fileupload = require("express-fileupload")
 const {errorHandler} = require('./middelware/errorHandler.js')
 const cors = require('cors');
 
-
-
-
 dotenv.config();
 
 

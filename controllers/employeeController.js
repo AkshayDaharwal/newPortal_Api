@@ -54,99 +54,99 @@ exports.employeFetchAll = async (req, res) => {
   }
 };
 
-exports.addEmployee = async (req, res) => {
-  const {
-    employeId,
-    firstName,
-    lastName,
-    email,
-    contact,
-    mobile,
-    emergencyNo,
-    position,
-    joiningDate,
-    correspondenceAddress,
-    currentAddress,
-    salary,
+// exports.addEmployee = async (req, res) => {
+//   const {
+//     employeId,
+//     firstName,
+//     lastName,
+//     email,
+//     contact,
+//     mobile,
+//     emergencyNo,
+//     position,
+//     joiningDate,
+//     correspondenceAddress,
+//     currentAddress,
+//     salary,
     
-  } = req.body;
-  try {
-    const existingEmployee = await Employee.findOne({ email: email });
+//   } = req.body;
+//   try {
+//     const existingEmployee = await Employee.findOne({ email: email });
 
-    if (existingEmployee) {
-      return res
-        .status(400)
-        .json({ message: "Employee with this email already exists" });
-    }
+//     if (existingEmployee) {
+//       return res
+//         .status(400)
+//         .json({ message: "Employee with this email already exists" });
+//     }
 
-    // Generate a random password
-    const passcode = generator.generate({
-      length: 15,
-      numbers: true,
-    });
-    const password = passcode.toString();
+//     // Generate a random password
+//     const passcode = generator.generate({
+//       length: 15,
+//       numbers: true,
+//     });
+//     const password = passcode.toString();
 
-    // Hash the generated password
-    const hashPassword = await bcrypt.hash(password, 10);
-    console.log("Files Received: ", req.files);
+//     // Hash the generated password
+//     const hashPassword = await bcrypt.hash(password, 10);
+//     console.log("Files Received: ", req.files);
 
-    if (!req.files || !req.files.file) {
-      return res.status(400).json({
-        message: "No file uploaded", 
-      });
-    }
+//     if (!req.files || !req.files.file) {
+//       return res.status(400).json({
+//         message: "No file uploaded", 
+//       });
+//     }
 
-    const file = req.files.file;
-    const uploadDir = path.join(__dirname, "files");
+//     const file = req.files.file;
+//     const uploadDir = path.join(__dirname, "files");
 
-    // Create the directory if it doesn't exist
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
-    }
-    const filePath = path.join(uploadDir, Date.now() + "_" + file.name); // "_" + file.name
+//     // Create the directory if it doesn't exist
+//     if (!fs.existsSync(uploadDir)) {
+//       fs.mkdirSync(uploadDir);
+//     }
+//     const filePath = path.join(uploadDir, Date.now() + "_" + file.name); // "_" + file.name
 
-    file.mv(filePath, (error) => {
-      if (error) {
-        return res.status(500).json({ message: "Error saving file", error });
-      }
-      const newEmployee = new Employee({
-        employeId,
-        firstName,
-        lastName,
-        email,
-        mobile,
-        correspondenceAddress,
-        currentAddress,
-        contact,
-        emergencyNo,
-        position,
-        joiningDate,
-        salary,
-        aadharcard: filePath,
-        pancard: filePath,
-        imgUrl: filePath,
-      });
+//     file.mv(filePath, (error) => {
+//       if (error) {
+//         return res.status(500).json({ message: "Error saving file", error });
+//       }
+//       const newEmployee = new Employee({
+//         employeId,
+//         firstName,
+//         lastName,
+//         email,
+//         mobile,
+//         correspondenceAddress,
+//         currentAddress,
+//         contact,
+//         emergencyNo,
+//         position,
+//         joiningDate,
+//         salary,
+//         aadharcard: filePath,
+//         pancard: filePath,
+//         imgUrl: filePath,
+//       });
 
-      newEmployee
-        .save()
-        .then(() => {
-          res.status(200).json({
-            message: "Employee added successfully",
-            newEmployee,
-          });
-        })
-        .catch((saveError) => {
-          res.status(400).json({
-            message: "Failed to add employee",
-            error: saveError.message,
-          });
-        });
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("server error- " + error);
-  }
-};
+//       newEmployee
+//         .save()
+//         .then(() => {
+//           res.status(200).json({
+//             message: "Employee added successfully",
+//             newEmployee,
+//           });
+//         })
+//         .catch((saveError) => {
+//           res.status(400).json({
+//             message: "Failed to add employee",
+//             error: saveError.message,
+//           });
+//         });
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("server error- " + error);
+//   }
+// };
 
 function isFileTypeSupported(type , supportedTypes){
     return supportedTypes.includes(type);
@@ -196,6 +196,48 @@ exports.imageUpload = async (req, res)=>{
     //upload file to cloudinary
     const response = await uploadFileToCloudinary(file, "RishusInfotech")
    console.log(response)
+
+   try {
+    console.log("Files Received ");
+
+    // Check if the intern already exists
+    const existingEmployee = await Employee.findOne({ email: email });
+
+    if (existingEmployee) {
+      return res
+        .status(400)
+        .json({ message: "intern with this email already exists" });
+    }
+
+    // Create a new employee document
+    const newEmployee = new Employee({
+      employeId,
+      firstName,
+      lastName,
+      email,
+      mobile,
+      correspondenceAddress,
+      currentAddress,
+      contact,
+      emergencyNo,
+      position,
+      joiningDate,
+      salary,
+      aadharcard: response.secure_url,
+      pancard: response.secure_url,
+      imgUrl: response.secure_url,
+    });
+
+    // Save the new intern to the database
+    await newEmployee.save();
+
+    return res
+      .status(200)
+      .json({ message: "intern added successfully", employeedata : newEmployee });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("server error- " + error);
+  }
       //db me entry 
       const fileData = await Employee.create({
 
@@ -293,7 +335,7 @@ exports.imgSize = async (req,res)=>{
 
 exports.employeeLogin = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
     //console.log(role);
 
     // Find employee by email
