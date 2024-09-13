@@ -2,11 +2,18 @@ const mongoose = require("mongoose");
 
 const addEmployee = new mongoose.Schema(
   {
-    employeId: String,
-
     fullName: {
       type: String,
-      rquire: true,
+      require: true,
+    },
+    date: {
+      type: Date,
+      default: Date.now,
+    },
+    status: {
+      type: String,
+      enum: ['Present', 'Absent', 'SickLeave', 'CasualLeave', 'Holiday', 'Halfday'],
+      require: true,
     },
   },
   { collection: "newEmployeeData" }
