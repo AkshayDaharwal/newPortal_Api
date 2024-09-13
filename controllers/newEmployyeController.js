@@ -123,7 +123,7 @@ exports.newEmpAddAttendance = async (req, res) => {
     await newEmployee.save();
 
     // Return the response with the fullName, ID, date, and status
-    res.status(400).json({
+    res.status(200).json({
       message: "New employee data added successfully",
       newEmployee: {
         fullName: newEmployee.fullName,
