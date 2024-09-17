@@ -2,14 +2,18 @@ const express = require('express') ;
 
 const router = express.Router();
 
-const {newEmpAddAttendance ,newEmpGetAll,newEmployeeDelete  } = require('../controllers/newEmployyeController')
+const { newEmployeeGet ,newEmpGetAll, newEmployeeDelete , newEmployeeAdd , newEmpattendance} = require('../controllers/newEmployyeController')
 
 
-router.get("/newEmpgetAll", newEmpGetAll , newEmpAddAttendance)
+router.get("/newEmpGet/:employeeId", newEmployeeGet) ;
 
-router.post("/newAddEmployee" , newEmpAddAttendance) //newAddEmployee
+router.get("/newEmpgetAll", newEmpGetAll )
 
-router.delete("/newEmpDelete/:id", newEmployeeDelete , newEmpAddAttendance)
+router.post("/newAddEmployee" , newEmployeeAdd) //newAddEmployee
+
+router.post("/newEmpattendance", newEmpattendance)
+
+router.delete("/newEmpDelete/:id", newEmployeeDelete )
 
 
 

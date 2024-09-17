@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const addEmployee = new mongoose.Schema(
   {
+    employeeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref : 'Employee',
+      require: true,
+    },
     fullName: {
       type: String,
       require: true,
