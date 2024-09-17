@@ -38,27 +38,6 @@ exports.newEmpGetAll = async (req, res) => {
 //     }
 // }
 
-exports.newEmployeeDelete = async (req, res)=>{
-
-  try {
-    
-    const id = req.params.id ;
-    console.log(id);
-    if(!id){
-      return res.status(400).json({message : "new Employee id is not found"});
-
-    }
-    const employe = await  newAddEmployee.findByIdAndDelete(id)
-    if(!employe){
-      return res.status(400).json({message : "newEmployee not found"})
-    }
-    return res.status(200).json({message : "new Employee Deleted successfully", employe})
-
-  } catch (error) {
-    return res.status(500).json({ message : error.message})
-  }
-
-}
 
 
 // exports.newEmpAttendance = async (req, res) => {
@@ -101,6 +80,46 @@ exports.newEmployeeDelete = async (req, res)=>{
 //   }
 // };
 
+// right code
+
+
+// exports.newEmpAddAttendance = async (req, res) => {
+//   const { fullName, status , attendance } = req.body;
+
+//   try {
+//     // Validate the status
+//     const validStatus = ['Present', 'Absent', 'SickLeave', 'CasualLeave', 'Holiday', 'Halfday'];
+//     if (!validStatus.includes(status)) {
+//       return res.status(400).json({ message: 'Invalid attendance status' });
+//     }
+
+//     // Create a new employee attendance record
+//     const newEmployee = new newAddEmployee({
+//       fullName,
+//       status,  // Include the status in the new employee data
+//       attendance,
+//       date: new Date(),  // Optional, since date has a default value
+//     });
+
+//     // Save the record to the database
+//     await newEmployee.save();
+
+//     // Return the response with the fullName, ID, date, and status
+//     res.status(200).json({
+//       message: "New employee data added successfully",
+//       newEmployee: {
+//         fullName: newEmployee.fullName,
+//         id: newEmployee._id,
+//         date: newEmployee.date,
+//         attendance : newEmployee.attendance,
+//         status: newEmployee.status,
+        
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 exports.newEmpAddAttendance = async (req, res) => {
   const { fullName, status } = req.body;
@@ -112,24 +131,43 @@ exports.newEmpAddAttendance = async (req, res) => {
       return res.status(400).json({ message: 'Invalid attendance status' });
     }
 
-    // Create a new employee attendance record
-    const newEmployee = new newAddEmployee({
-      fullName,
-      status,  // Include the status in the new employee data
-      date: new Date(),  // Optional, since date has a default value
-    });
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date();
+    const dateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-    // Save the record to the database
-    await newEmployee.save();
+    // Check if employee already exists
+    let employee = await newAddEmployee.findOne({ fullName });
 
-    // Return the response with the fullName, ID, date, and status
+    if (!employee) {
+      // If employee doesn't exist, create a new employee and add today's attendance
+      employee = new newAddEmployee({
+        fullName,
+        attendance: [{ date: dateOnly, status }],  // Create an attendance array with today's entry
+      });
+    } else {
+      // If employee exists, check if attendance is already recorded for today
+      const attendanceForToday = employee.attendance.find(
+        (record) => record.date.getTime() === dateOnly.getTime()
+      );
+
+      if (attendanceForToday) {
+        return res.status(400).json({ message: 'Attendance already recorded for today' });
+      }
+
+      // Add today's attendance to the existing employee's record
+      employee.attendance.push({ date: dateOnly, status });
+    }
+
+    // Save the employee record to the database
+    await employee.save();
+
+    // Return the response with the fullName, ID, and updated attendance for today
     res.status(200).json({
-      message: "New employee data added successfully",
-      newEmployee: {
-        fullName: newEmployee.fullName,
-        id: newEmployee._id,
-        date: newEmployee.date,
-        status: newEmployee.status,
+      message: "Attendance recorded successfully",
+      employee: {
+        fullName: employee.fullName,
+        id: employee._id,
+        attendance: employee.attendance,  // Return entire attendance history if needed
       },
     });
   } catch (error) {
@@ -137,3 +175,25 @@ exports.newEmpAddAttendance = async (req, res) => {
   }
 };
 
+
+exports.newEmployeeDelete = async (req, res)=>{
+
+  try {
+    
+    const id = req.params.id ;
+    console.log(id);
+    if(!id){
+      return res.status(400).json({message : "new Employee id is not found"});
+
+    }
+    const employe = await  newAddEmployee.findByIdAndDelete(id)
+    if(!employe){
+      return res.status(400).json({message : "newEmployee not found"})
+    }
+    return res.status(200).json({message : "new Employee Deleted successfully", employe})
+
+  } catch (error) {
+    return res.status(500).json({ message : error.message})
+  }
+
+}

@@ -6,6 +6,8 @@ const fs = require("fs");
 const path = require("path");
 const cloudinary = require("cloudinary").v2 ;
 
+
+
 exports.employeFetch = async (req, res) => {
   try {
     const id = req.params.id;
@@ -208,6 +210,8 @@ exports.imageUpload = async (req, res)=>{
         .status(400)
         .json({ message: "intern with this email already exists" });
     }
+
+   
 
     // Create a new employee document
     const newEmployee = new Employee({

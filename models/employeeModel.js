@@ -1,6 +1,7 @@
 //const { default: mongoose } = require('mongoose');
 const mongoose = require("mongoose");
 
+
 const { Schema } = mongoose;
 
 const employeeData = new Schema(
@@ -58,6 +59,9 @@ const employeeData = new Schema(
   },
   { collection: "EmployeeData" }
 );
+
+
+
 
 module.exports = mongoose.model("EmployeeData", employeeData);
 
