@@ -5,7 +5,7 @@ const router = express.Router();
 const { newEmployeeGet ,newEmpGetAll, newEmployeeDelete , newEmployeeAdd , newEmpattendance} = require('../controllers/newEmployyeController')
 
 
-router.get("/newEmpGet/:employeeId", newEmployeeGet) ;
+router.get("/newEmpGet/:id", newEmployeeGet) ;
 
 router.get("/newEmpgetAll", newEmpGetAll )
 

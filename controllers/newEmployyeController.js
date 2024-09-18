@@ -3,17 +3,16 @@ const newAddEmployee = require("../models/newEmployeeSchema");
 
 
 exports.newEmployeeGet = async (req, res) => {
-  const { employeeId } = req.params.employeeId; // Get fullName from URL parameters
-
   try {
-    // Find the employee by their full name
-    const employee = await newAddEmployee.findOne({ employeeId });
+    const id = req.params.id;
+    if (!id) {
+      return res.status(400).json({ message: "id not found" });
+    }
+    const employee = await newAddEmployee.findById(id);
 
     if (!employee) {
-      return res.status(404).json({ msg: "Employee not found" });
+      return res.status(400).json({ msg: "employee details not found" });
     }
-
-    // Return the employee details
     return res.status(200).json(employee);
   } catch (error) {
     console.log(error);
