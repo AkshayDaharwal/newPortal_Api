@@ -20,6 +20,28 @@ exports.newEmployeeGet = async (req, res) => {
   }
 };
 
+exports.newEmpOneToAllGet = async (req, res) => {
+  try {
+    const employeeId = req.params.employeeId;
+    if (!employeeId) {
+      return res.status(400).json({ message: "id not found" });
+    }
+
+    // Find all employees that have the same employeeId
+    const employeeData = await newAddEmployee.find({ employeeId });
+
+    if (!employeeData || employeeData.length === 0) {
+      return res.status(404).json({ msg: "Employee details not found" });
+    }
+
+    return res.status(200).json(employeeData);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
 
 exports.newEmpGetAll = async (req, res) => {
     try {
@@ -104,7 +126,7 @@ exports.newEmpGetAll = async (req, res) => {
 
 
 exports.newEmployeeAdd = async (req, res) => {
-  const { fullName, status  } = req.body;
+  const { employeeId ,fullName, status  } = req.body;
 
   try {
     // Validate the status
@@ -115,6 +137,7 @@ exports.newEmployeeAdd = async (req, res) => {
 
     // Create a new employee attendance record
     const newEmployee = new newAddEmployee({
+      employeeId,
       fullName,
       status,  // Include the status in the new employee data
       date: new Date(),  // Optional, since date has a default value
@@ -127,6 +150,7 @@ exports.newEmployeeAdd = async (req, res) => {
     res.status(200).json({
       message: "New employee data added successfully",
       newEmployee: {
+        employeeId: newEmployee.employeeId,
         fullName: newEmployee.fullName,
         id: newEmployee._id,
         date: newEmployee.date,
@@ -232,23 +256,75 @@ exports.newEmployeeAdd = async (req, res) => {
 //   }
 // };
 
+//last right code 
+// exports.newEmpattendance = async (req,res) =>{
 
-exports.newEmpattendance = async (req,res) =>{
+//   const { employeeId ,status  } = req.body;
 
-  const { employeeId ,status  } = req.body;
+//   try {
+//     // Validate the status
+//     const validStatus = ['Present', 'Absent', 'SickLeave', 'CasualLeave', 'Holiday', 'Halfday'];
+//     if (!validStatus.includes(status)) {
+//       return res.status(400).json({ message: 'Invalid attendance status' });
+//     }
+
+//   //new code 
+
+//   const employee = await newAddEmployee.findById(employeeId);
+//     if (!employee) {
+//       return res.status(404).json({ message: 'Employee not found' });
+//     }
+
+//     // Check if there's already an attendance record for the same employee and date
+//     const existingAttendance = await newAddEmployee.findOne({
+//       employeeId: employee._id,
+//       date: new Date().setHours(0, 0, 0, 0) // Ensures the check is for the same day
+//     });
+
+//     if (existingAttendance) {
+//       return res.status(400).json({ message: 'Attendance for today has already been recorded' });
+//     }
+
+//     // Create a new employee attendance record
+//     const newEmployee = new newAddEmployee({
+//       status,  // Include the status in the new employee data
+//       date: new Date(),  // Optional, since date has a default value
+//     });
+
+//     // Save the record to the database
+//     await newEmployee.save();
+
+//     // Return the response with the fullName, ID, date, and status
+//     res.status(200).json({
+//       message: "New employee data added successfully",
+//       newEmployee: {
+//         id: newEmployee._id,
+//         date: newEmployee.date,
+//         status: newEmployee.status,
+        
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+
+// }
+
+exports.newEmpattendance = async (req, res) => {
+  const { employeeId, status } = req.body;
+  console.log({ employeeId, status });
 
   try {
+    // Find the employee by _id (assuming employeId is the ObjectId)
+    const employee = await newAddEmployee.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
     // Validate the status
     const validStatus = ['Present', 'Absent', 'SickLeave', 'CasualLeave', 'Holiday', 'Halfday'];
     if (!validStatus.includes(status)) {
       return res.status(400).json({ message: 'Invalid attendance status' });
-    }
-
-  //new code 
-
-  const employee = await newAddEmployee.findById(employeeId);
-    if (!employee) {
-      return res.status(404).json({ message: 'Employee not found' });
     }
 
     // Check if there's already an attendance record for the same employee and date
@@ -261,30 +337,18 @@ exports.newEmpattendance = async (req,res) =>{
       return res.status(400).json({ message: 'Attendance for today has already been recorded' });
     }
 
-    // Create a new employee attendance record
-    const newEmployee = new newAddEmployee({
-      status,  // Include the status in the new employee data
-      date: new Date(),  // Optional, since date has a default value
+    // Create a new attendance record based on the status
+    const newAttendance = new newAddEmployee({
+      employeeId: employee._id, // Ensure it's the ObjectId
+      status,
     });
 
-    // Save the record to the database
-    await newEmployee.save();
-
-    // Return the response with the fullName, ID, date, and status
-    res.status(200).json({
-      message: "New employee data added successfully",
-      newEmployee: {
-        id: newEmployee._id,
-        date: newEmployee.date,
-        status: newEmployee.status,
-        
-      },
-    });
+    await newAttendance.save();
+    res.status(201).json({ message: `${status} attendance recorded successfully`, attendance: newAttendance });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-
-}
+};
 
 exports.newEmployeeDelete = async (req, res)=>{
 

@@ -9,6 +9,7 @@ const employeeRoute = require("./views/employee.js");
 const hrRoute = require('./views/hrroute.js');
 const dateTimeRoutes = require('./views/dateTimeRouter.js')
 const newAddEmployee = require('./views/newEmployeeRouter.js')
+// const payment = require("./views/paymentRoute.js")
 const fileupload = require("express-fileupload")
 const {errorHandler} = require('./middelware/errorHandler.js')
 const cors = require('cors');
@@ -51,6 +52,7 @@ app.use('/emproute', employeeRoute);
 app.use('/hr',hrRoute);
 app.use('/datetime', dateTimeRoutes)
 app.use('/addEmployee', newAddEmployee)
+// app.use('/payment', payment)
 
 
 app.listen(PORT, ()=>{

@@ -2,10 +2,12 @@ const express = require('express') ;
 
 const router = express.Router();
 
-const { newEmployeeGet ,newEmpGetAll, newEmployeeDelete , newEmployeeAdd , newEmpattendance} = require('../controllers/newEmployyeController')
+const { newEmployeeGet ,newEmpGetAll, newEmployeeDelete , newEmployeeAdd , newEmpattendance , newEmpOneToAllGet} = require('../controllers/newEmployyeController')
 
 
 router.get("/newEmpGet/:id", newEmployeeGet) ;
+
+router.get("/newEmpOneToAllGet/:employeeId", newEmpOneToAllGet) ;
 
 router.get("/newEmpgetAll", newEmpGetAll )
 
