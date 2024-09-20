@@ -98,6 +98,26 @@ exports.getAllTime = async (req, res) => {
   }
 };
 
+exports.newEmpTimeGet = async (req, res) => {
+  try {
+    const employeeId = req.params.employeeId;
+    if (!employeeId) {
+      return res.status(400).json({ message: "id not found" });
+    }
+
+    // Find all employees that have the same employeeId
+    const employeeData = await TimeLog.find({ employeeId });
+
+    if (!employeeData || employeeData.length === 0) {
+      return res.status(404).json({ msg: "Employee time details not found" });
+    }
+
+    return res.status(200).json(employeeData);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 
 
